@@ -16,11 +16,34 @@
 				// Internal image object like a flash placeholder
 				if (ed.dom.getAttrib(ed.selection.getNode(), 'class', '').indexOf('mceItem') != -1)
 					return;
-
+				var real_url = ed.settings.select_image_url;
+				var node = ed.selection.getNode();
+				dom = ed.dom
+				if (node && node.nodeName == 'IMG') {
+					real_url = ed.settings.edit_image_url + '&url=' + dom.getAttrib(node, 'src');
+				  var title = dom.getAttrib(node, 'title');
+					real_url += title != '' ? '&title=' + title : '';
+					var alignment = jQuery.support.cssFloat ? node.style.cssFloat : node.style.styleFloat;
+					real_url += alignment != '' ? '&alignment=' + alignment : '';
+					if(alignment == '') {
+						alignment = node.style.verticalAlign;
+						real_url += alignment != '' ? '&alignment=' + alignment : '';
+					}
+					var border = node.style.border;
+					real_url += border != '' ? '&border=' + border : '';
+					var margin = node.style.margin;
+					real_url += margin != '' ? '&margin=' + margin : '';
+					var width = node.style.width;
+					if (width == '') width = node.width;
+					real_url += width != '' ? '&width=' + width : '';
+					var height = node.style.height;
+					if (height == '') height = node.height;
+					real_url += height != '' ? '&height=' + height : '';
+				}
 				ed.windowManager.open({
-					file : url + '/image.htm',
-					width : 480 + parseInt(ed.getLang('advimage.delta_width', 0)),
-					height : 385 + parseInt(ed.getLang('advimage.delta_height', 0)),
+					file : real_url,
+					width : parseInt(ed.settings.img_popup_w),
+					height : parseInt(ed.settings.img_popup_h),
 					inline : 1
 				}, {
 					plugin_url : url
